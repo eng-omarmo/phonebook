@@ -28,11 +28,18 @@ class AuthenticationController extends Controller
 
     public function store(UserStoreRequest $request)
     {
-        $user =  User::create($request->validated());
-        return $this->successResponse(
-            $user,
-            'User created successfully',
-        );
+        try {
+            $user =  User::create($request->validated());
+            return $this->successResponse(
+                $user,
+                'User created successfully',
+            );
+        } catch (\Throwable $th) {
+            return $this->serverErrorResponse(
+                $th->getMessage()
+            );
+        }
+
     }
 
     public function update(UserUpdateRequest $request)
@@ -45,8 +52,24 @@ class AuthenticationController extends Controller
                 'User updated successfully',
             );
         } catch (\Throwable $th) {
-            //throw $th;
+            return $this->serverErrorResponse(
+                $th->getMessage()
+            );
         }
-
+    }
+    public function destroy()
+    {
+        try {
+            $user = User::find(request()->id);
+            $user->delete();
+            return $this->successResponse(
+                $user,
+                'User deleted successfully',
+            );
+        } catch (\Throwable $th) {
+            return $this->serverErrorResponse(
+                $th->getMessage()
+            );
+        }
     }
 }
