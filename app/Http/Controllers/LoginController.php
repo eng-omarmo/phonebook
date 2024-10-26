@@ -31,10 +31,10 @@ class LoginController extends Controller
         }
     }
 
-    public function test()
+    public function logout()
     {
-        return $this->successResponse([
-            'message' => 'test'
-        ]);
+        $user =  User::find(Auth::user()->id);
+        $user->tokens()->delete();
+        return $this->successResponse(null, 'Logout successfully');
     }
 }
